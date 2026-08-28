@@ -1,0 +1,21 @@
+import type { SVGProps } from 'react';
+
+export function CheckCalendarIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M6 1.49951V4.49975M12 1.49951V4.49975M2.25 7.49999H15.75M6.75 12.0004L8.25 13.5005L11.25 10.5002M3.75 2.99963H14.25C15.0784 2.99963 15.75 3.67126 15.75 4.49975V15.0006C15.75 15.8291 15.0784 16.5007 14.25 16.5007H3.75C2.92157 16.5007 2.25 15.8291 2.25 15.0006V4.49975C2.25 3.67126 2.92157 2.99963 3.75 2.99963Z"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
