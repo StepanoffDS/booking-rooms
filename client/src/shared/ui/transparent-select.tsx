@@ -16,6 +16,7 @@ export function TransparentSelect({
   options,
   prefix,
   onValueChange,
+  disabled = false,
   className,
 }: {
   label: string;
@@ -23,10 +24,11 @@ export function TransparentSelect({
   options: string[];
   prefix?: ReactNode;
   onValueChange: (value: string | null) => void;
+  disabled?: boolean;
   className?: string;
 }) {
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger
         aria-label={label}
         className={cn(
