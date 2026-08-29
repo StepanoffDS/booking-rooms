@@ -16,6 +16,7 @@ import {
 import { Card, CardContent, CardHeader } from '@/shared/ui/kit/card';
 import { Skeleton } from '@/shared/ui/kit/skeleton';
 import { RoomDatePicker } from '../compose/room-date-picker';
+import { downloadBookingsIcs } from '../model/ics';
 import { useRoomDate } from '../model/use-room-date';
 import { getBookingHeight, SCHEDULE_SLOT_COUNT, type ScheduleSlot } from '../model/schedule';
 import { RoomBreadcrumbs } from './room-breadcrumbs';
@@ -128,6 +129,9 @@ function RoomContentScreen({
   const scheduleDate = format(roomDate.selectedDate, `EEEE, ${DATE_FORMAT}`, { locale: ru });
   const [isBookingDialogOpen, setBookingDialogOpen] = useState(false);
   const { data: user } = useCurrentUser();
+  const ownBookings = scheduleSlots
+    .flatMap((slot) => slot.bookings)
+    .filter((booking) => booking.userId === user?.id);
 
   return (
     <main className="flex flex-1 bg-slate-50">
@@ -150,7 +154,18 @@ function RoomContentScreen({
                   {scheduleDate[0].toUpperCase() + scheduleDate.slice(1)}
                 </p>
               </div>
-              <RoomDatePicker roomDate={roomDate} />
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={!ownBookings.length}
+                  className="h-min-10 h-10 text-sm font-bold"
+                  onClick={() => downloadBookingsIcs(room, ownBookings)}
+                >
+                  Экспортировать .ics
+                </Button>
+                <RoomDatePicker roomDate={roomDate} />
+              </div>
             </div>
 
             <ol className="mt-5 flex-1">
