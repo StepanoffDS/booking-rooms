@@ -6,9 +6,9 @@ import { Button } from '@/shared/ui/kit/button';
 
 function NotFoundPage() {
   return (
-    <main className="container flex flex-1 px-6 py-10">
+    <main className="container flex flex-1 bg-slate-50">
       <section
-        className="flex flex-1 flex-col items-center justify-center bg-slate-50 pb-20 text-center"
+        className="flex flex-1 flex-col items-center justify-center  pb-20 text-center"
         aria-labelledby="not-found-title"
       >
         <p className="text-[9.5rem] leading-none font-extrabold text-primary">404</p>
