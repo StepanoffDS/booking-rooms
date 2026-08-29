@@ -1,13 +1,15 @@
 import type { Room } from '@/entities/room';
-import { AttentionSignIcon } from '@/shared/assets/icons/attention-triangle-sign';
+import { href, Link } from 'react-router-dom';
 import { BuildIcon } from '@/shared/assets/icons/build';
 import { PeopleIcon } from '@/shared/assets/icons/people';
 import { SearchCrossIcon } from '@/shared/assets/icons/search-cross';
+import { ROUTES } from '@/shared/model/routes';
+import { ErrorState } from '@/shared/ui/error-state';
 import { Button } from '@/shared/ui/kit/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/shared/ui/kit/card';
 import { Skeleton } from '@/shared/ui/kit/skeleton';
 
-function RoomCard({ name, floor, capacity, available = false }: Room) {
+function RoomCard({ id, name, floor, capacity, available = false }: Room) {
   return (
     <Card className="justify-between rounded-xl p-5 shadow-none ring-1 ring-border gap-2">
       <CardHeader className="gap-1 p-0">
@@ -31,9 +33,12 @@ function RoomCard({ name, floor, capacity, available = false }: Room) {
       </CardContent>
 
       <CardFooter className="grid grid-cols-2 gap-4 p-0 pt-2.5 mt-auto">
-        <Button variant="link" className="h-10 text-sm font-bold text-primary">
+        <Link
+          to={href(ROUTES.ROOM, { roomId: id })}
+          className="flex h-10 items-center justify-center text-sm font-bold text-primary hover:underline"
+        >
           Подробнее
-        </Button>
+        </Link>
         <Button disabled={!available} className="h-10 text-sm font-bold">
           Забронировать
         </Button>
@@ -89,20 +94,13 @@ function RoomsLoadingScreen() {
 
 function RoomsErrorScreen({ onRetry }: { onRetry: () => void }) {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center pb-24 text-center">
-      <div className="flex size-36 items-center justify-center rounded-full bg-red-100">
-        <AttentionSignIcon aria-hidden="true" className="size-14" />
-      </div>
-      <h1 id="rooms-title" className="mt-9 text-4xl font-bold tracking-[-0.04em]">
-        Не удалось загрузить данные
-      </h1>
-      <p className="mt-3 text-xl text-muted-foreground">
-        Произошла ошибка при загрузке списка переговорных
-      </p>
-      <Button className="mt-7 h-13 rounded-lg px-6 text-base font-bold" onClick={onRetry}>
-        Попробовать снова
-      </Button>
-    </div>
+    <ErrorState
+      titleId="rooms-title"
+      title="Не удалось загрузить данные"
+      description="Произошла ошибка при загрузке списка переговорных"
+      onRetry={onRetry}
+      className="flex-1 pb-24"
+    />
   );
 }
 
