@@ -3,8 +3,8 @@ import { ru } from 'date-fns/locale';
 import { useState } from 'react';
 
 import type { RoomDetails } from '@/entities/room';
+import { useCurrentUser } from '@/entities/user';
 import { cn } from '@/shared/lib/css';
-import { CURRENT_USER_ID } from '@/shared/model/current-user';
 import { ErrorState } from '@/shared/ui/error-state';
 import { Button } from '@/shared/ui/kit/button';
 import {
@@ -127,6 +127,7 @@ function RoomContentScreen({
 }) {
   const scheduleDate = format(roomDate.selectedDate, `EEEE, ${DATE_FORMAT}`, { locale: ru });
   const [isBookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const { data: user } = useCurrentUser();
 
   return (
     <main className="flex flex-1 bg-slate-50">
@@ -162,7 +163,7 @@ function RoomContentScreen({
                         key={booking.id}
                         className={cn(
                           'relative z-10 flex items-center rounded-lg border px-4 text-sm font-semibold',
-                          booking.userId === CURRENT_USER_ID
+                          booking.userId === user?.id
                             ? 'border-teal-500 bg-teal-100 text-teal-900'
                             : 'border-border bg-slate-100',
                         )}

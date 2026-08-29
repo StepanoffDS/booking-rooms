@@ -1,11 +1,14 @@
 import { NavLink } from 'react-router-dom';
 
-import { Avatar, AvatarFallback } from '@/shared/ui/kit/avatar';
+import { useCurrentUser } from '@/entities/user';
 import { ROUTES } from '@/shared/model/routes';
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/kit/avatar';
 import { HeaderNavLink } from './header-nav-link';
 import { CheckCalendarIcon } from '@/shared/assets/icons/check-calendar';
 
 export function AppHeader() {
+  const { data: user } = useCurrentUser();
+
   return (
     <header className="flex h-18 items-center justify-between border-b border-border container">
       <NavLink
@@ -25,10 +28,11 @@ export function AppHeader() {
       </nav>
 
       <NavLink to="#" className="flex items-center gap-2">
-        <span className="text-[14px] font-semibold ">Константин К.</span>
+        <span className="text-[14px] font-semibold">{user?.displayName}</span>
         <Avatar size="lg" className="bg-[#5478D9] text-white after:border-transparent">
+          {user?.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.displayName} />}
           <AvatarFallback className="bg-transparent text-[14px] font-semibold text-white">
-            КК
+            {user?.initials}
           </AvatarFallback>
         </Avatar>
       </NavLink>
