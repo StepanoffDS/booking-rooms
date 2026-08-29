@@ -11,6 +11,10 @@ export type ScheduleSlot = {
   bookings: RoomBooking[];
 };
 
+export function getBookingHeight(booking: RoomBooking) {
+  return (new Date(booking.endsAt).getTime() - new Date(booking.startsAt).getTime()) / 60_000;
+}
+
 export function getScheduleSlots(date: Date, timeZone: string): ScheduleSlot[] {
   return Array.from({ length: SCHEDULE_SLOT_COUNT }, (_, index) => {
     const officeTime = new TZDate(

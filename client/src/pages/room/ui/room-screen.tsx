@@ -3,7 +3,8 @@ import { ru } from 'date-fns/locale';
 import { useState } from 'react';
 
 import type { RoomDetails } from '@/entities/room';
-import { CalendarIcon } from '@/shared/assets/icons/calendar';
+import { cn } from '@/shared/lib/css';
+import { CURRENT_USER_ID } from '@/shared/model/current-user';
 import { ErrorState } from '@/shared/ui/error-state';
 import { Button } from '@/shared/ui/kit/button';
 import {
@@ -12,14 +13,13 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/shared/ui/kit/breadcrumb';
-import { Calendar } from '@/shared/ui/kit/calendar';
 import { Card, CardContent, CardHeader } from '@/shared/ui/kit/card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/kit/popover';
 import { Skeleton } from '@/shared/ui/kit/skeleton';
+import { RoomDatePicker } from '../compose/room-date-picker';
 import { useRoomDate } from '../model/use-room-date';
-import { SCHEDULE_SLOT_COUNT, type ScheduleSlot } from '../model/schedule';
+import { getBookingHeight, SCHEDULE_SLOT_COUNT, type ScheduleSlot } from '../model/schedule';
 import { RoomBreadcrumbs } from './room-breadcrumbs';
-import { RoomInfoCard } from './room-info-card';
+import { RoomInfoCard } from '../compose/room-info-card';
 import { BookingDialog } from '@/features/booking-create';
 import { DATE_FORMAT } from '@/shared/model/date';
 
@@ -149,38 +149,24 @@ function RoomContentScreen({
                   {scheduleDate[0].toUpperCase() + scheduleDate.slice(1)}
                 </p>
               </div>
-              <Popover open={roomDate.isDatePickerOpen} onOpenChange={roomDate.setDatePickerOpen}>
-                <PopoverTrigger
-                  type="button"
-                  className="inline-flex h-10 items-center justify-center gap-1 rounded-md border border-border px-4 text-sm font-semibold transition-colors hover:bg-input/50"
-                >
-                  <CalendarIcon aria-hidden="true" className="size-4" />
-                  Выбрать дату
-                </PopoverTrigger>
-                <PopoverContent align="end" className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={roomDate.selectedDate}
-                    disabled={[{ before: roomDate.minDate }, { after: roomDate.maxDate }]}
-                    onSelect={(date) => {
-                      if (!date) return;
-                      roomDate.selectDate(date);
-                    }}
-                    locale={ru}
-                  />
-                </PopoverContent>
-              </Popover>
+              <RoomDatePicker roomDate={roomDate} />
             </div>
 
             <ol className="mt-5 flex-1">
               {scheduleSlots.map((slot) => (
-                <li key={slot.time} className="grid min-h-15 grid-cols-[4rem_minmax(0,1fr)]">
+                <li key={slot.time} className="grid h-15 grid-cols-[4rem_minmax(0,1fr)]">
                   <time className="pt-1 text-sm text-muted-foreground">{slot.time}</time>
                   <div className="border-t border-border pt-1">
                     {slot.bookings.map((booking) => (
                       <div
                         key={booking.id}
-                        className="flex h-15 items-center rounded-lg border border-border bg-slate-100 px-4 text-sm font-semibold"
+                        className={cn(
+                          'relative z-10 flex items-center rounded-lg border px-4 text-sm font-semibold',
+                          booking.userId === CURRENT_USER_ID
+                            ? 'border-teal-500 bg-teal-100 text-teal-900'
+                            : 'border-border bg-slate-100',
+                        )}
+                        style={{ height: getBookingHeight(booking) }}
                       >
                         {booking.title}
                       </div>
