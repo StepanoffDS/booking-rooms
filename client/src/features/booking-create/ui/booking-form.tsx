@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { InfoIcon, LoaderCircleIcon } from 'lucide-react';
+import { InfoIcon } from 'lucide-react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import {
@@ -11,15 +11,13 @@ import {
   getTimeMinutes,
   type BookingFormValues,
 } from '../model/booking-form';
-import { ApiError } from '@/shared/api/instance';
 import { Alert, AlertDescription } from '@/shared/ui/kit/alert';
-import { Button } from '@/shared/ui/kit/button';
-import { DialogClose } from '@/shared/ui/kit/dialog';
 import { FieldError } from '@/shared/ui/kit/field';
 import { Input } from '@/shared/ui/kit/input';
 import { Textarea } from '@/shared/ui/kit/textarea';
 import { DatePicker } from '@/shared/ui/date-picker';
 import { BookingFormField } from './booking-form-field';
+import { BookingFormFooter } from './booking-form-footer';
 import { BookingDurationField } from '../compose/booking-duration-field';
 import { BookingStartTimeField } from '../compose/booking-start-time-field';
 import { DATE_FORMAT } from '@/shared/model/date';
@@ -131,31 +129,7 @@ export function BookingForm({
         </AlertDescription>
       </Alert>
 
-      {submitError &&
-        !(submitError instanceof ApiError && submitError.code === 'BOOKING_CONFLICT') && (
-          <p role="alert" className="text-sm text-destructive">
-            {submitError.message || 'Не удалось создать бронирование'}
-          </p>
-        )}
-
-      <div className="flex flex-col-reverse gap-3 pt-4 sm:flex-row sm:justify-end">
-        <DialogClose
-          render={
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isPending}
-              className="h-12 px-7 text-base font-bold"
-            />
-          }
-        >
-          Отмена
-        </DialogClose>
-        <Button type="submit" disabled={isPending} className="h-12 px-7 text-base font-bold">
-          {isPending && <LoaderCircleIcon aria-hidden="true" className="size-4 animate-spin" />}
-          {isPending ? 'Создаём бронирование...' : 'Забронировать'}
-        </Button>
-      </div>
+      <BookingFormFooter isPending={isPending} submitError={submitError} />
     </form>
   );
 }

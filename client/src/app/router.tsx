@@ -29,6 +29,10 @@ export const router = createBrowserRouter([
         path: ROUTES.BOOKINGS,
         lazy: () => import('@/pages/bookings/bookings.page'),
       },
+      {
+        path: '*',
+        lazy: () => import('@/pages/not-found/not-found.page'),
+      },
     ],
   },
 ]);
