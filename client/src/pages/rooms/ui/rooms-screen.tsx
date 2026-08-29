@@ -1,51 +1,11 @@
 import type { Room } from '@/entities/room';
-import { href, Link } from 'react-router-dom';
 import { BuildIcon } from '@/shared/assets/icons/build';
-import { PeopleIcon } from '@/shared/assets/icons/people';
 import { SearchCrossIcon } from '@/shared/assets/icons/search-cross';
-import { ROUTES } from '@/shared/model/routes';
 import { ErrorState } from '@/shared/ui/error-state';
 import { Button } from '@/shared/ui/kit/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/shared/ui/kit/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/shared/ui/kit/card';
 import { Skeleton } from '@/shared/ui/kit/skeleton';
-
-function RoomCard({ id, name, floor, capacity, available = false }: Room) {
-  return (
-    <Card className="justify-between rounded-xl p-5 shadow-none ring-1 ring-border gap-2">
-      <CardHeader className="gap-1 p-0">
-        <CardTitle className="text-lg font-bold tracking-[-0.04em]">{name}</CardTitle>
-        <p className="text-xs text-muted-foreground">{floor} этаж</p>
-      </CardHeader>
-
-      <CardContent className="flex flex-col gap-3 p-0">
-        <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
-          <PeopleIcon aria-hidden="true" />
-          <span>Вместимость: до {capacity} человек</span>
-        </div>
-        <div
-          className={`flex items-center gap-2 rounded-lg px-2 py-2 text-xs font-semibold ${
-            available ? 'bg-teal-100 text-primary' : 'bg-slate-200 text-slate-500'
-          }`}
-        >
-          <span className={`size-2 rounded-full ${available ? 'bg-primary' : 'bg-slate-400'}`} />
-          <span>{available ? 'Доступно на выбранное время' : 'Недоступно на выбранное время'}</span>
-        </div>
-      </CardContent>
-
-      <CardFooter className="grid grid-cols-2 gap-4 p-0 pt-2.5 mt-auto">
-        <Link
-          to={href(ROUTES.ROOM, { roomId: id })}
-          className="flex h-10 items-center justify-center text-sm font-bold text-primary hover:underline"
-        >
-          Подробнее
-        </Link>
-        <Button disabled={!available} className="h-10 text-sm font-bold">
-          Забронировать
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-}
+import { RoomCard } from './room-card';
 
 function RoomCardSkeleton() {
   return (
@@ -139,7 +99,7 @@ function EmptyRoomsScreen({ onReset }: { onReset: () => void }) {
   );
 }
 
-function RoomsListScreen({ rooms }: { rooms: Room[] }) {
+function RoomsListScreen({ rooms, search }: { rooms: Room[]; search: string }) {
   return (
     <>
       <h1 id="rooms-title" className="mb-9 text-2xl font-bold">
@@ -147,7 +107,7 @@ function RoomsListScreen({ rooms }: { rooms: Room[] }) {
       </h1>
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {rooms.map((room) => (
-          <RoomCard key={room.id} {...room} />
+          <RoomCard key={room.id} {...room} search={search} />
         ))}
       </div>
     </>
@@ -177,11 +137,13 @@ export function getRoomsScreenState({
 export function RoomsScreen({
   state,
   rooms,
+  search = '',
   onRetry,
   onReset,
 }: {
   state: RoomsScreenState;
   rooms: Room[];
+  search?: string;
   onRetry: () => void;
   onReset: () => void;
 }) {
@@ -195,6 +157,6 @@ export function RoomsScreen({
     case 'empty':
       return <EmptyRoomsScreen onReset={onReset} />;
     case 'content':
-      return <RoomsListScreen rooms={rooms} />;
+      return <RoomsListScreen rooms={rooms} search={search} />;
   }
 }

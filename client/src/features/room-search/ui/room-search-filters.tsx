@@ -2,14 +2,14 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
 import {
-  getBookingDateBounds,
   getStartTimeOptions,
   type RoomFilters,
-} from '../model/use-room-filters';
+} from '../model/room-filters';
 import { CalendarIcon } from '@/shared/assets/icons/calendar';
 import { ClockIcon } from '@/shared/assets/icons/clock';
 import { PeopleIcon } from '@/shared/assets/icons/people';
 import { DATE_FORMAT } from '@/shared/model/date';
+import { getBookingDateBounds } from '@/shared/model/booking';
 import { Calendar } from '@/shared/ui/kit/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/kit/popover';
 import { TransparentSelect } from '@/shared/ui/transparent-select';

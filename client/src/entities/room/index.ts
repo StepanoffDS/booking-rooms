@@ -1,2 +1,2 @@
-export type { RoomsQuery, Room } from './model/types';
-export { useRooms } from './api/use-rooms';
+export type { Room, RoomBooking, RoomBookingsQuery, RoomDetails, RoomsQuery } from './model/types';
+export { useRoom, useRoomBookings, useRooms } from './api/use-rooms';

@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 
 import { Avatar, AvatarFallback } from '@/shared/ui/kit/avatar';
 import { ROUTES } from '@/shared/model/routes';
-import { HeaderNavLink } from './HeaderNavLink';
+import { HeaderNavLink } from './header-nav-link';
 import { CheckCalendarIcon } from '@/shared/assets/icons/check-calendar';
 
 export function AppHeader() {
