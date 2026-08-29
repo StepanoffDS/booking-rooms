@@ -24,6 +24,7 @@ import { DATE_FORMAT } from '@/shared/model/date';
 
 type BookingFormProps = {
   date: Date;
+  initialValues?: BookingFormValues;
   timeZone: string;
   isPending: boolean;
   submitError: Error | null;
@@ -33,13 +34,14 @@ type BookingFormProps = {
 
 export function BookingForm({
   date,
+  initialValues,
   timeZone,
   isPending,
   submitError,
   showDateHint,
   onSubmit,
 }: BookingFormProps) {
-  const form = useForm<BookingFormValues>({ defaultValues: getDefaultBookingValues(date) });
+  const form = useForm<BookingFormValues>({ defaultValues: initialValues ?? getDefaultBookingValues(date) });
   const selectedDate = useWatch({ control: form.control, name: 'date' });
   const startTime = useWatch({ control: form.control, name: 'startTime' });
   const durationMinutes = useWatch({ control: form.control, name: 'durationMinutes' });

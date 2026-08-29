@@ -16,6 +16,7 @@ import { BookingForm } from './booking-form';
 type BookingDialogProps = {
   room: RoomDetails;
   date: Date;
+  initialValues?: BookingFormValues;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
@@ -26,6 +27,7 @@ type BookingDialogContentProps = {
   state: BookingDialogState;
   room: RoomDetails;
   date: Date;
+  initialValues?: BookingFormValues;
   isPending: boolean;
   submitError: Error | null;
   showDateHint: boolean;
@@ -36,6 +38,7 @@ type BookingDialogContentProps = {
 function BookingFormScreen({
   room,
   date,
+  initialValues,
   isPending,
   submitError,
   showDateHint,
@@ -52,6 +55,7 @@ function BookingFormScreen({
       </DialogHeader>
       <BookingForm
         date={date}
+        initialValues={initialValues}
         timeZone={room.office.timezone}
         isPending={isPending}
         submitError={submitError}
@@ -71,7 +75,7 @@ function BookingDialogContent({ state, onConflictRetry, ...props }: BookingDialo
   }
 }
 
-export function BookingDialog({ room, date, open, onOpenChange }: BookingDialogProps) {
+export function BookingDialog({ room, date, initialValues, open, onOpenChange }: BookingDialogProps) {
   const [screen, setScreen] = useState<BookingDialogState>('form');
   const [showDateHint, setShowDateHint] = useState(false);
   const createBooking = useCreateBooking({
@@ -98,6 +102,7 @@ export function BookingDialog({ room, date, open, onOpenChange }: BookingDialogP
           state={screen}
           room={room}
           date={date}
+          initialValues={initialValues}
           isPending={createBooking.isPending}
           submitError={createBooking.error}
           showDateHint={showDateHint}

@@ -1,8 +1,12 @@
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { TZDate } from '@date-fns/tz';
+import { RefreshCwIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import type { RoomDetails } from '@/entities/room';
+import type { RoomBooking, RoomDetails } from '@/entities/room';
+import type { BookingFormValues } from '@/features/booking-create/model/booking-form';
+import { BookingDialog } from '@/features/booking-create';
 import { useCurrentUser } from '@/entities/user';
 import { cn } from '@/shared/lib/css';
 import { ErrorState } from '@/shared/ui/error-state';
@@ -15,13 +19,13 @@ import {
 } from '@/shared/ui/kit/breadcrumb';
 import { Card, CardContent, CardHeader } from '@/shared/ui/kit/card';
 import { Skeleton } from '@/shared/ui/kit/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/kit/tooltip';
 import { RoomDatePicker } from '../compose/room-date-picker';
 import { downloadBookingsIcs } from '../model/ics';
 import { useRoomDate } from '../model/use-room-date';
 import { getBookingHeight, SCHEDULE_SLOT_COUNT, type ScheduleSlot } from '../model/schedule';
 import { RoomBreadcrumbs } from './room-breadcrumbs';
 import { RoomInfoCard } from '../compose/room-info-card';
-import { BookingDialog } from '@/features/booking-create';
 import { DATE_FORMAT } from '@/shared/model/date';
 
 type RoomScreenState = 'loading' | 'error' | 'content';
@@ -128,10 +132,24 @@ function RoomContentScreen({
 }) {
   const scheduleDate = format(roomDate.selectedDate, `EEEE, ${DATE_FORMAT}`, { locale: ru });
   const [isBookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [bookingInitialValues, setBookingInitialValues] = useState<BookingFormValues>();
   const { data: user } = useCurrentUser();
   const ownBookings = scheduleSlots
     .flatMap((slot) => slot.bookings)
     .filter((booking) => booking.userId === user?.id);
+
+  function openBookingDialog(booking?: RoomBooking) {
+    setBookingInitialValues(
+      booking && {
+        title: booking.title,
+        date: roomDate.selectedDate,
+        startTime: format(new TZDate(booking.startsAt, room.office.timezone), 'HH:mm'),
+        durationMinutes: getBookingHeight(booking),
+        comment: booking.comment ?? '',
+      },
+    );
+    setBookingDialogOpen(true);
+  }
 
   return (
     <main className="flex flex-1 bg-slate-50">
@@ -168,36 +186,55 @@ function RoomContentScreen({
               </div>
             </div>
 
-            <ol className="mt-5 flex-1">
-              {scheduleSlots.map((slot) => (
-                <li key={slot.time} className="grid h-15 grid-cols-[4rem_minmax(0,1fr)]">
-                  <time className="pt-1 text-sm text-muted-foreground">{slot.time}</time>
-                  <div className="border-t border-border pt-1">
-                    {slot.bookings.map((booking) => (
-                      <div
-                        key={booking.id}
-                        className={cn(
-                          'relative z-10 flex items-center rounded-lg border px-4 text-sm font-semibold',
-                          booking.userId === user?.id
-                            ? 'border-teal-500 bg-teal-100 text-teal-900'
-                            : 'border-border bg-slate-100',
-                        )}
-                        style={{ height: getBookingHeight(booking) }}
-                      >
-                        {booking.title}
-                      </div>
-                    ))}
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <TooltipProvider>
+              <ol className="mt-5 flex-1">
+                {scheduleSlots.map((slot) => (
+                  <li key={slot.time} className="grid h-15 grid-cols-[4rem_minmax(0,1fr)]">
+                    <time className="pt-1 text-sm text-muted-foreground">{slot.time}</time>
+                    <div className="border-t border-border pt-1">
+                      {slot.bookings.map((booking) => (
+                        <div
+                          key={booking.id}
+                          className={cn(
+                            'relative z-10 flex items-center rounded-lg border px-4 pr-12 text-sm font-semibold',
+                            booking.userId === user?.id
+                              ? 'border-teal-500 bg-teal-100 text-teal-900'
+                              : 'border-border bg-slate-100',
+                          )}
+                          style={{ height: getBookingHeight(booking) }}
+                        >
+                          {booking.title}
+                          <Tooltip>
+                            <TooltipTrigger
+                              render={
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  className="absolute top-1/2 right-3 -translate-y-1/2"
+                                  aria-label={`Создать бронь на основе «${booking.title}»`}
+                                  onClick={() => openBookingDialog(booking)}
+                                >
+                                  <RefreshCwIcon />
+                                </Button>
+                              }
+                            />
+                            <TooltipContent>Повторить бронирование</TooltipContent>
+                          </Tooltip>
+                        </div>
+                      ))}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </TooltipProvider>
 
             <div className="mt-6 flex justify-end">
               <Button
                 disabled={!roomDate.canBook}
                 size="lg"
                 className="h-12 px-6 text-sm font-bold"
-                onClick={() => setBookingDialogOpen(true)}
+                onClick={() => openBookingDialog()}
               >
                 Забронировать комнату
               </Button>
@@ -209,6 +246,7 @@ function RoomContentScreen({
         <BookingDialog
           room={room}
           date={roomDate.selectedDate}
+          initialValues={bookingInitialValues}
           open
           onOpenChange={setBookingDialogOpen}
         />
