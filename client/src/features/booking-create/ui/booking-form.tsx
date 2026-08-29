@@ -24,6 +24,7 @@ import { DATE_FORMAT } from '@/shared/model/date';
 
 type BookingFormProps = {
   date: Date;
+  timeZone: string;
   isPending: boolean;
   submitError: Error | null;
   showDateHint: boolean;
@@ -32,6 +33,7 @@ type BookingFormProps = {
 
 export function BookingForm({
   date,
+  timeZone,
   isPending,
   submitError,
   showDateHint,
@@ -80,6 +82,7 @@ export function BookingForm({
                 onDateChange={field.onChange}
                 disabled={isPending}
                 className="w-full"
+                timeZone={timeZone}
               />
             </BookingFormField>
           )}

@@ -52,6 +52,7 @@ function BookingFormScreen({
       </DialogHeader>
       <BookingForm
         date={date}
+        timeZone={room.office.timezone}
         isPending={isPending}
         submitError={submitError}
         showDateHint={showDateHint}

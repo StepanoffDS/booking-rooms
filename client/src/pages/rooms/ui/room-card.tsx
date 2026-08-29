@@ -45,7 +45,21 @@ export function RoomCard({
         >
           Подробнее
         </Link>
-        <Button disabled={!available} className="h-10 text-sm font-bold">
+        <Button
+          nativeButton={available ? false : undefined}
+          render={
+            available ? (
+              <Link
+                to={{
+                  pathname: href(ROUTES.ROOM, { roomId: id }),
+                  search: search ? `?${search}` : '',
+                }}
+              />
+            ) : undefined
+          }
+          disabled={!available}
+          className="h-10 text-sm font-bold"
+        >
           Забронировать
         </Button>
       </CardFooter>

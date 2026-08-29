@@ -13,11 +13,15 @@ type SetSearchParams = (
   options?: { replace?: boolean },
 ) => void;
 
-export function useRoomsFilters(searchParams: URLSearchParams, setSearchParams: SetSearchParams) {
+export function useRoomsFilters(
+  searchParams: URLSearchParams,
+  setSearchParams: SetSearchParams,
+  timeZone?: string,
+) {
   const search = searchParams.toString();
   const roomFilters = useMemo(
-    () => getRoomFiltersFromSearchParams(new URLSearchParams(search)),
-    [search],
+    () => getRoomFiltersFromSearchParams(new URLSearchParams(search), timeZone),
+    [search, timeZone],
   );
   const normalizedRoomFilters = useMemo(
     () => roomFiltersToSearchParams(roomFilters, new URLSearchParams(search)).toString(),

@@ -14,12 +14,16 @@ type SetSearchParams = (
   options?: { replace?: boolean },
 ) => void;
 
-export function useRoomDate(searchParams: URLSearchParams, setSearchParams: SetSearchParams) {
+export function useRoomDate(
+  searchParams: URLSearchParams,
+  setSearchParams: SetSearchParams,
+  timeZone = 'UTC',
+) {
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
-  const { minDate, maxDate } = getBookingDateBounds();
+  const { minDate, maxDate } = getBookingDateBounds(timeZone);
   const dateParam = searchParams.get(DATE_PARAM);
-  const parsedDate = parseBookingDateParam(dateParam);
-  const selectedDate = parsedDate && isBookingDateAvailable(parsedDate) ? parsedDate : minDate;
+  const parsedDate = parseBookingDateParam(dateParam, timeZone);
+  const selectedDate = parsedDate && isBookingDateAvailable(parsedDate, timeZone) ? parsedDate : minDate;
   const selectedDateParam = toBookingDateParam(selectedDate);
 
   useEffect(() => {
@@ -44,7 +48,7 @@ export function useRoomDate(searchParams: URLSearchParams, setSearchParams: SetS
     selectedDate,
     minDate,
     maxDate,
-    canBook: isBookingDateAvailable(selectedDate),
+    canBook: isBookingDateAvailable(selectedDate, timeZone),
     isDatePickerOpen,
     setDatePickerOpen,
     selectDate,

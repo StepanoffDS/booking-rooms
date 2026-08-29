@@ -35,7 +35,7 @@ export function useCreateBooking({ room, onSuccess, onConflict }: UseCreateBooki
       toast.add({
         type: 'success',
         title: 'Бронирование создано',
-        description: `Комната ${room.name}, ${format(startsAt, DATE_FORMAT, { locale: ru })}, ${format(startsAt, 'HH:mm')}–${format(endsAt, 'HH:mm')} MSK`,
+        description: `Комната ${room.name}, ${format(startsAt, DATE_FORMAT, { locale: ru })}, ${format(startsAt, 'HH:mm')}–${format(endsAt, 'HH:mm')}`,
       });
       onSuccess();
     },

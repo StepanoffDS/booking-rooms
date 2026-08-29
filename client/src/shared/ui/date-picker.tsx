@@ -4,7 +4,7 @@ import { ru } from 'date-fns/locale';
 import { CalendarIcon } from '@/shared/assets/icons/calendar';
 import { cn } from '@/shared/lib/css';
 import { DATE_FORMAT_WEEKDAY } from '@/shared/model/date';
-import { getBookingDateBounds } from '@/shared/model/booking';
+import { getBookingDateBounds, toBookingDate } from '@/shared/model/booking';
 import { Calendar } from '@/shared/ui/kit/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/kit/popover';
 
@@ -13,13 +13,15 @@ export function DatePicker({
   onDateChange,
   disabled = false,
   className,
+  timeZone,
 }: {
   date: Date;
   onDateChange: (date: Date) => void;
   disabled?: boolean;
   className?: string;
+  timeZone: string;
 }) {
-  const { minDate, maxDate } = getBookingDateBounds();
+  const { minDate, maxDate } = getBookingDateBounds(timeZone);
 
   return (
     <Popover>
@@ -40,7 +42,7 @@ export function DatePicker({
           mode="single"
           selected={date}
           disabled={[{ before: minDate }, { after: maxDate }]}
-          onSelect={(nextDate) => nextDate && onDateChange(nextDate)}
+          onSelect={(nextDate) => nextDate && onDateChange(toBookingDate(nextDate, timeZone))}
           locale={ru}
         />
       </PopoverContent>

@@ -57,7 +57,7 @@ export function getBookingInterval(
 
   return {
     startsAt: startsAt.toISOString(),
-    endsAt: new Date(startsAt.getTime() + durationMinutes * 60_000).toISOString(),
+    endsAt: new TZDate(startsAt.getTime() + durationMinutes * 60_000, timeZone).toISOString(),
   };
 }
 

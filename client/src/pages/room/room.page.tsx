@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { TZDate } from '@date-fns/tz';
 
 import { useRoom, useRoomBookings } from '@/entities/room';
 import { useRoomDate } from './model/use-room-date';
@@ -11,28 +12,37 @@ function RoomPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.toString();
 
-  const roomDate = useRoomDate(searchParams, setSearchParams);
   const roomQuery = useRoom(roomId);
+  const timeZone = roomQuery.data?.office.timezone;
+  const roomDate = useRoomDate(searchParams, setSearchParams, timeZone);
 
   const scheduleQuery = useMemo(() => {
-    const from = new Date(roomDate.selectedDate);
-    from.setHours(0, 0, 0, 0);
-    const to = new Date(from);
-    to.setDate(to.getDate() + 1);
+    if (!timeZone) return undefined;
+    const from = new TZDate(
+      roomDate.selectedDate.getFullYear(),
+      roomDate.selectedDate.getMonth(),
+      roomDate.selectedDate.getDate(),
+      timeZone,
+    );
+    const to = new TZDate(
+      from.getFullYear(),
+      from.getMonth(),
+      from.getDate() + 1,
+      timeZone,
+    );
     return { from: from.toISOString(), to: to.toISOString() };
-  }, [roomDate.selectedDate]);
+  }, [roomDate.selectedDate, timeZone]);
 
   const bookingsQuery = useRoomBookings(roomId, scheduleQuery);
 
   const scheduleSlots = useMemo(() => {
-    const timeZone = roomQuery.data?.office.timezone;
     if (!timeZone) return [];
 
     const slots = getScheduleSlots(roomDate.selectedDate, timeZone);
     const bookings = bookingsQuery.data?.items ?? [];
 
-    return groupBookingsBySlot(slots, bookings);
-  }, [bookingsQuery.data?.items, roomDate.selectedDate, roomQuery.data?.office.timezone]);
+    return groupBookingsBySlot(slots, bookings, timeZone);
+  }, [bookingsQuery.data?.items, roomDate.selectedDate, timeZone]);
 
   const screenState = getRoomScreenState({
     isLoading: roomQuery.isLoading || bookingsQuery.isLoading,

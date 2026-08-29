@@ -9,11 +9,14 @@ import { getRoomsScreenState, RoomsScreen } from './ui/rooms-screen';
 function RoomsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.toString();
-
-  const roomsFilters = useRoomsFilters(searchParams, setSearchParams);
-
   const officesQuery = useOffices();
-  const roomsQuery = useRooms(toRoomsQuery(roomsFilters.roomFilters));
+  const selectedOffice = officesQuery.data?.items.find(
+    (office) => office.id === searchParams.get('office'),
+  );
+
+  const roomsFilters = useRoomsFilters(searchParams, setSearchParams, selectedOffice?.timezone);
+
+  const roomsQuery = useRooms(toRoomsQuery(roomsFilters.roomFilters, selectedOffice?.timezone));
   const rooms = roomsQuery.data?.items ?? [];
 
   const screenState = getRoomsScreenState({
@@ -39,6 +42,7 @@ function RoomsPage() {
         filters={roomsFilters.roomFilters}
         onChange={roomsFilters.updateFilters}
         disabled={!roomsFilters.roomFilters.officeId}
+        timeZone={selectedOffice?.timezone}
       />
 
       <section

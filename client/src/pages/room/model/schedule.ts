@@ -26,16 +26,20 @@ export function getScheduleSlots(date: Date, timeZone: string): ScheduleSlot[] {
       timeZone,
     );
 
-    return { time: format(new Date(officeTime.getTime()), 'HH:00'), bookings: [] };
+    return { time: format(officeTime, 'HH:00'), bookings: [] };
   });
 }
 
-export function groupBookingsBySlot(slots: ScheduleSlot[], bookings: RoomBooking[]): ScheduleSlot[] {
+export function groupBookingsBySlot(
+  slots: ScheduleSlot[],
+  bookings: RoomBooking[],
+  timeZone: string,
+): ScheduleSlot[] {
   const groupedSlots: ScheduleSlot[] = slots.map((slot) => ({ time: slot.time, bookings: [] }));
   const slotsByTime = new Map(groupedSlots.map((slot) => [slot.time, slot]));
 
   bookings.forEach((booking) => {
-    slotsByTime.get(format(new Date(booking.startsAt), 'HH:00'))?.bookings.push(booking);
+    slotsByTime.get(format(new TZDate(booking.startsAt, timeZone), 'HH:00'))?.bookings.push(booking);
   });
 
   return groupedSlots;

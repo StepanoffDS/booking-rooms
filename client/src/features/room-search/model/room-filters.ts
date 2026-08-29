@@ -1,4 +1,5 @@
 import type { RoomsQuery } from '@/entities/room';
+import { TZDate } from '@date-fns/tz';
 import {
   getBookingDateBounds,
   isBookingDateAvailable,
@@ -30,10 +31,10 @@ export function getStartTimeOptions(durationMinutes: number) {
   );
 }
 
-export function createInitialFilters(officeId = ''): RoomFilters {
+export function createInitialFilters(officeId = '', timeZone = 'UTC'): RoomFilters {
   return {
     officeId,
-    date: getBookingDateBounds().minDate,
+    date: getBookingDateBounds(timeZone).minDate,
     startTime: DEFAULT_TIME,
     durationMinutes: 60,
     minCapacity: 4,
@@ -48,23 +49,30 @@ export function getNextRoomFilters(current: RoomFilters, changes: Partial<RoomFi
     : { ...next, startTime: startTimes.at(-1) ?? next.startTime };
 }
 
-export function toRoomsQuery(filters: RoomFilters): RoomsQuery | undefined {
+export function toRoomsQuery(filters: RoomFilters, timeZone?: string): RoomsQuery | undefined {
   if (
     !filters.officeId ||
-    !isBookingDateAvailable(filters.date) ||
+    !timeZone ||
+    !isBookingDateAvailable(filters.date, timeZone) ||
     !getStartTimeOptions(filters.durationMinutes).includes(filters.startTime)
   ) {
     return undefined;
   }
 
   const [hours, minutes] = filters.startTime.split(':').map(Number);
-  const from = new Date(filters.date);
-  from.setHours(hours, minutes, 0, 0);
+  const from = new TZDate(
+    filters.date.getFullYear(),
+    filters.date.getMonth(),
+    filters.date.getDate(),
+    hours,
+    minutes,
+    timeZone,
+  );
 
   return {
     officeId: filters.officeId,
     minCapacity: filters.minCapacity,
     from: from.toISOString(),
-    to: new Date(from.getTime() + filters.durationMinutes * 60_000).toISOString(),
+    to: new TZDate(from.getTime() + filters.durationMinutes * 60_000, timeZone).toISOString(),
   };
 }

@@ -41,8 +41,6 @@ export function OfficeSelector({
       </Select>
       <div className="mt-1 flex items-center gap-3 text-base text-muted-foreground text-[13px]">
         <span>{selectedOffice ? selectedOffice.address : 'Адрес не выбран'}</span>
-        <span aria-hidden="true">•</span>
-        <span>{selectedOffice ? selectedOffice.timezone : 'Местное время: ---'}</span>
       </div>
     </section>
   );

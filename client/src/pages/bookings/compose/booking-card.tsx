@@ -61,7 +61,7 @@ export function BookingCard({
           <span aria-hidden="true">•</span>
           <span>
             {format(date, 'HH:mm')} –{' '}
-            {format(new TZDate(booking.endsAt, booking.office.timezone), 'HH:mm')} MSK
+            {format(new TZDate(booking.endsAt, booking.office.timezone), 'HH:mm')}
           </span>
         </div>
       </div>

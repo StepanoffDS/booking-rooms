@@ -32,16 +32,16 @@ function getDuration(value: string | null, fallback: number) {
     : fallback;
 }
 
-export function getRoomFiltersFromSearchParams(searchParams: URLSearchParams): RoomFilters {
-  const defaults = createInitialFilters(searchParams.get(FILTER_PARAM.officeId) ?? '');
-  const date = parseBookingDateParam(searchParams.get(FILTER_PARAM.date));
+export function getRoomFiltersFromSearchParams(searchParams: URLSearchParams, timeZone = 'UTC'): RoomFilters {
+  const defaults = createInitialFilters(searchParams.get(FILTER_PARAM.officeId) ?? '', timeZone);
+  const date = parseBookingDateParam(searchParams.get(FILTER_PARAM.date), timeZone);
   const durationMinutes = getDuration(
     searchParams.get(FILTER_PARAM.durationMinutes),
     defaults.durationMinutes,
   );
 
   return getNextRoomFilters(defaults, {
-    date: date && isBookingDateAvailable(date) ? date : defaults.date,
+    date: date && isBookingDateAvailable(date, timeZone) ? date : defaults.date,
     startTime: searchParams.get(FILTER_PARAM.startTime) ?? defaults.startTime,
     durationMinutes,
     minCapacity: getPositiveInteger(

@@ -29,10 +29,12 @@ export function RoomSearchFilters({
   filters,
   onChange,
   disabled = false,
+  timeZone,
 }: {
   filters: RoomFilters;
   onChange: (changes: Partial<RoomFilters>) => void;
   disabled?: boolean;
+  timeZone?: string;
 }) {
   return (
     <section
@@ -45,6 +47,7 @@ export function RoomSearchFilters({
           date={filters.date}
           onDateChange={(date) => onChange({ date })}
           disabled={disabled}
+          timeZone={timeZone ?? 'UTC'}
         />
       </div>
       <div className="w-[110px]">
