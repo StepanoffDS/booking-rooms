@@ -7,17 +7,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/kit/select';
+import { Skeleton } from '@/shared/ui/kit/skeleton';
 
 export function OfficeSelector({
   offices,
   value,
   onChange,
+  isLoading = false,
 }: {
   offices: Office[];
   value: string;
   onChange: (officeId: string) => void;
+  isLoading?: boolean;
 }) {
   const selectedOffice = offices.find(({ id }) => id === value);
+
+  if (isLoading) {
+    return (
+      <section className="container border-b border-border py-6" aria-busy="true" aria-label="Загрузка офисов">
+        <Skeleton className="h-7 w-48" />
+        <Skeleton className="mt-2 h-4 w-72" />
+      </section>
+    );
+  }
 
   return (
     <section className="container border-b border-border py-6" aria-labelledby="office-title">

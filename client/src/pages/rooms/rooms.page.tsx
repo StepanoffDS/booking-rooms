@@ -4,6 +4,7 @@ import { useOffices } from '@/entities/office';
 import { useRooms } from '@/entities/room';
 import { OfficeSelector, RoomSearchFilters, toRoomsQuery } from '@/features/room-search';
 import { useRoomsFilters } from './model/use-rooms-filters';
+import { storeSelectedOffice, useStoredOffice } from './model/use-stored-office';
 import { getRoomsScreenState, RoomsScreen } from './ui/rooms-screen';
 
 function RoomsPage() {
@@ -13,6 +14,8 @@ function RoomsPage() {
   const selectedOffice = officesQuery.data?.items.find(
     (office) => office.id === searchParams.get('office'),
   );
+
+  useStoredOffice(searchParams, setSearchParams, officesQuery.data?.items);
 
   const roomsFilters = useRoomsFilters(searchParams, setSearchParams, selectedOffice?.timezone);
 
@@ -31,12 +34,18 @@ function RoomsPage() {
     if (roomsFilters.roomFilters.officeId) void roomsQuery.refetch();
   }
 
+  function handleChangeOffice(officeId: string) {
+    storeSelectedOffice(officeId);
+    roomsFilters.updateFilters({ officeId });
+  }
+
   return (
     <main className="flex flex-1 flex-col">
       <OfficeSelector
         offices={officesQuery.data?.items ?? []}
         value={roomsFilters.roomFilters.officeId}
-        onChange={(officeId) => roomsFilters.updateFilters({ officeId })}
+        onChange={handleChangeOffice}
+        isLoading={officesQuery.isLoading}
       />
       <RoomSearchFilters
         filters={roomsFilters.roomFilters}

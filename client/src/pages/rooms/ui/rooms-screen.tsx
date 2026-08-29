@@ -68,7 +68,7 @@ function SelectOfficeScreen() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center pb-24 text-center">
       <div className="flex size-36 items-center justify-center rounded-full bg-teal-100">
-        <BuildIcon aria-hidden="true" className="size-14" />
+        <BuildIcon aria-hidden="true" />
       </div>
       <h1 id="rooms-title" className="mt-9 text-4xl font-bold">
         Выберите офис

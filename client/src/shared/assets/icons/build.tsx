@@ -2,9 +2,13 @@ import type { SVGProps } from 'react';
 
 export function BuildIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <path d="M18 49V11C18 8.79086 19.7909 7 22 7H34C36.2091 7 38 8.79086 38 11V49" stroke="#0F9F90" strokeWidth="2" strokeLinecap="round" />
-      <path d="M24 49V39H32V49M25 18H25.01M31 18H31.01M25 26H25.01M31 26H31.01M25 34H25.01M31 34H31.01" stroke="#0F9F90" strokeWidth="2" strokeLinecap="round" />
+    <svg xmlns="http://www.w3.org/2000/svg" width={48} height={48} fill="none" {...props}>
+      <path
+        stroke="#0D9488"
+        strokeLinecap="round"
+        strokeWidth={2}
+        d="M24 20h.02M24 28h.02M24 12h.02M32 20h.02M32 28h.02M32 12h.02M16 20h.02M16 28h.02M16 12h.02M18 44.001v-6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v6M12 3.999H36a4 4 0 0 1 4 4V40a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Z"
+      />
     </svg>
   );
 }
