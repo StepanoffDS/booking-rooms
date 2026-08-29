@@ -16,7 +16,7 @@ export function RoomCard({
   return (
     <Card className="justify-between rounded-xl p-5 shadow-none ring-1 ring-border gap-2">
       <CardHeader className="gap-1 p-0">
-        <CardTitle className="text-lg font-bold tracking-[-0.04em]">{name}</CardTitle>
+        <CardTitle className="text-lg font-bold">{name}</CardTitle>
         <p className="text-xs text-muted-foreground">{floor} этаж</p>
       </CardHeader>
 

@@ -112,3 +112,7 @@
   padding-right: 40px;
   margin: 0 auto;
 }
+
+html:has([data-slot='dialog-content'][data-open]) {
+  background: #383939;
+}

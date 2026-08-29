@@ -1,11 +1,17 @@
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { ChevronRight } from 'lucide-react';
+import { useState } from 'react';
 
 import type { RoomDetails } from '@/entities/room';
 import { CalendarIcon } from '@/shared/assets/icons/calendar';
 import { ErrorState } from '@/shared/ui/error-state';
 import { Button } from '@/shared/ui/kit/button';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '@/shared/ui/kit/breadcrumb';
 import { Calendar } from '@/shared/ui/kit/calendar';
 import { Card, CardContent, CardHeader } from '@/shared/ui/kit/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/kit/popover';
@@ -14,6 +20,8 @@ import { useRoomDate } from '../model/use-room-date';
 import { SCHEDULE_SLOT_COUNT, type ScheduleSlot } from '../model/schedule';
 import { RoomBreadcrumbs } from './room-breadcrumbs';
 import { RoomInfoCard } from './room-info-card';
+import { BookingDialog } from '@/features/booking-create';
+import { DATE_FORMAT } from '@/shared/model/date';
 
 type RoomScreenState = 'loading' | 'error' | 'content';
 
@@ -21,13 +29,21 @@ function RoomLoadingScreen() {
   return (
     <main aria-busy="true" aria-label="Загрузка переговорной" className="flex flex-1 bg-slate-50">
       <div className="container flex w-full flex-col px-6 py-8 lg:px-10">
-        <div className="flex items-center gap-3">
-          <Skeleton className="h-5 w-32" />
-          <ChevronRight aria-hidden="true" className="size-4 text-muted-foreground" />
-          <Skeleton className="h-5 w-24" />
-          <ChevronRight aria-hidden="true" className="size-4 text-muted-foreground" />
-          <Skeleton className="h-5 w-36" />
-        </div>
+        <Breadcrumb aria-label="Хлебные крошки">
+          <BreadcrumbList className="gap-2 text-sm">
+            <BreadcrumbItem>
+              <Skeleton className="h-5 w-32" />
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="[&>svg]:size-4" />
+            <BreadcrumbItem>
+              <Skeleton className="h-5 w-24" />
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="[&>svg]:size-4" />
+            <BreadcrumbItem>
+              <Skeleton className="h-5 w-36" />
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
         <div className="mt-4 grid flex-1 gap-8 lg:grid-cols-[minmax(18rem,26rem)_minmax(0,1fr)]">
           <Card className="h-fit rounded-xl border border-border p-6 shadow-none">
@@ -109,7 +125,8 @@ function RoomContentScreen({
   search: string;
   roomDate: ReturnType<typeof useRoomDate>;
 }) {
-  const scheduleDate = format(roomDate.selectedDate, 'EEEE, d MMMM', { locale: ru });
+  const scheduleDate = format(roomDate.selectedDate, `EEEE, ${DATE_FORMAT}`, { locale: ru });
+  const [isBookingDialogOpen, setBookingDialogOpen] = useState(false);
 
   return (
     <main className="flex flex-1 bg-slate-50">
@@ -178,6 +195,7 @@ function RoomContentScreen({
                 disabled={!roomDate.canBook}
                 size="lg"
                 className="h-12 px-6 text-sm font-bold"
+                onClick={() => setBookingDialogOpen(true)}
               >
                 Забронировать комнату
               </Button>
@@ -185,6 +203,14 @@ function RoomContentScreen({
           </Card>
         </div>
       </div>
+      {isBookingDialogOpen && (
+        <BookingDialog
+          room={room}
+          date={roomDate.selectedDate}
+          open
+          onOpenChange={setBookingDialogOpen}
+        />
+      )}
     </main>
   );
 }

@@ -16,7 +16,7 @@ export function AppHeader() {
         <span className="flex size-9 items-center justify-center rounded-md bg-primary">
           <CheckCalendarIcon aria-hidden="true" className="size-[18px]" />
         </span>
-        <span className="text-xl font-bold tracking-[-0.04em] ">BookRoom</span>
+        <span className="text-xl font-bold tracking-[-0.04em]">BookRoom</span>
       </NavLink>
 
       <nav aria-label="Основная навигация" className="flex h-full self-stretch items-center gap-8">

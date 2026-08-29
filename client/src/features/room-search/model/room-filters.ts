@@ -6,6 +6,7 @@ import {
   WORKDAY_END_MINUTES,
   WORKDAY_START_MINUTES,
 } from '@/shared/model/booking';
+import { DEFAULT_TIME } from '@/shared/model/date';
 
 export { getBookingDateBounds } from '@/shared/model/booking';
 
@@ -33,7 +34,7 @@ export function createInitialFilters(officeId = ''): RoomFilters {
   return {
     officeId,
     date: getBookingDateBounds().minDate,
-    startTime: '15:00',
+    startTime: DEFAULT_TIME,
     durationMinutes: 60,
     minCapacity: 4,
   };

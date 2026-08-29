@@ -70,7 +70,7 @@ function SelectOfficeScreen() {
       <div className="flex size-36 items-center justify-center rounded-full bg-teal-100">
         <BuildIcon aria-hidden="true" className="size-14" />
       </div>
-      <h1 id="rooms-title" className="mt-9 text-4xl font-bold tracking-[-0.04em]">
+      <h1 id="rooms-title" className="mt-9 text-4xl font-bold">
         Выберите офис
       </h1>
       <p className="mt-3 max-w-xl text-xl text-muted-foreground">
@@ -86,7 +86,7 @@ function EmptyRoomsScreen({ onReset }: { onReset: () => void }) {
       <div className="flex size-36 items-center justify-center rounded-full bg-slate-200">
         <SearchCrossIcon aria-hidden="true" className="size-14" />
       </div>
-      <h1 id="rooms-title" className="mt-9 text-4xl font-bold tracking-[-0.04em]">
+      <h1 id="rooms-title" className="mt-9 text-4xl font-bold">
         Нет доступных переговорных
       </h1>
       <p className="mt-3 text-xl text-muted-foreground">

@@ -12,11 +12,16 @@ type ErrorStateProps = {
 
 export function ErrorState({ title, description, onRetry, titleId, className }: ErrorStateProps) {
   return (
-    <div role="alert" className={cn('flex flex-col items-center justify-center text-center', className)}>
+    <div
+      role="alert"
+      className={cn('flex flex-col items-center justify-center text-center', className)}
+    >
       <div className="flex size-36 items-center justify-center rounded-full bg-red-100">
         <AttentionSignIcon aria-hidden="true" className="size-14" />
       </div>
-      <h2 id={titleId} className="mt-9 text-4xl font-bold tracking-[-0.04em]">{title}</h2>
+      <h2 id={titleId} className="mt-9 text-4xl font-bold">
+        {title}
+      </h2>
       <p className="mt-3 max-w-md text-xl text-muted-foreground">{description}</p>
       <Button className="mt-7 h-13 rounded-lg px-6 text-base font-bold" onClick={onRetry}>
         Попробовать снова

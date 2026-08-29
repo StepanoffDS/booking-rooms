@@ -1,17 +1,7 @@
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-
-import {
-  getStartTimeOptions,
-  type RoomFilters,
-} from '../model/room-filters';
-import { CalendarIcon } from '@/shared/assets/icons/calendar';
+import { getStartTimeOptions, type RoomFilters } from '../model/room-filters';
 import { ClockIcon } from '@/shared/assets/icons/clock';
 import { PeopleIcon } from '@/shared/assets/icons/people';
-import { DATE_FORMAT } from '@/shared/model/date';
-import { getBookingDateBounds } from '@/shared/model/booking';
-import { Calendar } from '@/shared/ui/kit/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/kit/popover';
+import { DatePicker } from '@/shared/ui/date-picker';
 import { TransparentSelect } from '@/shared/ui/transparent-select';
 
 const durationOptions: Record<string, number> = {
@@ -44,8 +34,6 @@ export function RoomSearchFilters({
   onChange: (changes: Partial<RoomFilters>) => void;
   disabled?: boolean;
 }) {
-  const { minDate, maxDate } = getBookingDateBounds();
-
   return (
     <section
       className="container flex flex-wrap items-end gap-4 border-b border-border py-4"
@@ -53,28 +41,12 @@ export function RoomSearchFilters({
     >
       <div className="w-[170px]">
         <p className="mb-2 text-[11px] font-semibold text-muted-foreground">ДАТА</p>
-        <Popover>
-          <PopoverTrigger
-            type="button"
-            aria-label="Дата"
-            disabled={disabled}
-            className="flex h-9 w-full items-center gap-2 rounded-md border border-border bg-transparent px-3 text-sm font-medium shadow-none outline-none transition-colors hover:bg-slate-50 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <CalendarIcon className="size-4" aria-hidden="true" />
-            <span>{format(filters.date, DATE_FORMAT, { locale: ru })}</span>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={filters.date}
-              disabled={[{ before: minDate }, { after: maxDate }]}
-              onSelect={(date) => date && onChange({ date })}
-              locale={ru}
-            />
-          </PopoverContent>
-        </Popover>
+        <DatePicker
+          date={filters.date}
+          onDateChange={(date) => onChange({ date })}
+          disabled={disabled}
+        />
       </div>
-
       <div className="w-[110px]">
         <p className="mb-2 text-[11px] font-semibold text-muted-foreground">ВРЕМЯ НАЧАЛА</p>
         <TransparentSelect
