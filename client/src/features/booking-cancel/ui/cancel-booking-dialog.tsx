@@ -44,6 +44,7 @@ export function CancelBookingDialog({
         type: 'error',
         title: error instanceof Error ? error.message : 'Не удалось отменить бронирование',
       });
+      onOpenChange(false);
     }
   }
 
