@@ -20,7 +20,7 @@ const getAmenities = (room?: RoomDetails) =>
 
 export function RoomInfoCard({ room }: { room?: RoomDetails }) {
   return (
-    <Card className="h-fit rounded-xl border border-border p-6 shadow-none gap-0">
+    <Card className="h-fit rounded-xl p-6 shadow-none gap-0">
       <CardHeader className="border-b border-border p-0 !pb-5">
         <CardTitle className="text-3xl font-bold">{room?.name ?? 'Переговорная'}</CardTitle>
         <p className="mt-2 text-sm text-muted-foreground">

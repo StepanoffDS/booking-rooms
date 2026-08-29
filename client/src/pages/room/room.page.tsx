@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 
 import { useRoom, useRoomBookings } from '@/entities/room';
 import { useRoomDate } from './model/use-room-date';
-import { groupBookingsBySlot } from './model/schedule';
+import { getScheduleSlots, groupBookingsBySlot } from './model/schedule';
 import { getRoomScreenState, RoomScreen } from './ui/room-screen';
 
 function RoomPage() {
@@ -21,12 +21,18 @@ function RoomPage() {
     to.setDate(to.getDate() + 1);
     return { from: from.toISOString(), to: to.toISOString() };
   }, [roomDate.selectedDate]);
+
   const bookingsQuery = useRoomBookings(roomId, scheduleQuery);
 
-  const scheduleSlots = useMemo(
-    () => groupBookingsBySlot(bookingsQuery.data?.items ?? []),
-    [bookingsQuery.data?.items],
-  );
+  const scheduleSlots = useMemo(() => {
+    const timeZone = roomQuery.data?.office.timezone;
+    if (!timeZone) return [];
+
+    const slots = getScheduleSlots(roomDate.selectedDate, timeZone);
+    const bookings = bookingsQuery.data?.items ?? [];
+
+    return groupBookingsBySlot(slots, bookings);
+  }, [bookingsQuery.data?.items, roomDate.selectedDate, roomQuery.data?.office.timezone]);
 
   const screenState = getRoomScreenState({
     isLoading: roomQuery.isLoading || bookingsQuery.isLoading,

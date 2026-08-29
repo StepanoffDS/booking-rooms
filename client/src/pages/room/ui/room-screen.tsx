@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader } from '@/shared/ui/kit/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/kit/popover';
 import { Skeleton } from '@/shared/ui/kit/skeleton';
 import { useRoomDate } from '../model/use-room-date';
-import { timeSlots, type ScheduleSlot } from '../model/schedule';
+import { SCHEDULE_SLOT_COUNT, type ScheduleSlot } from '../model/schedule';
 import { RoomBreadcrumbs } from './room-breadcrumbs';
 import { RoomInfoCard } from './room-info-card';
 
@@ -55,9 +55,9 @@ function RoomLoadingScreen() {
             </div>
 
             <ol className="mt-5 flex-1">
-              {timeSlots.map((time) => (
-                <li key={time} className="grid min-h-15 grid-cols-[4rem_minmax(0,1fr)]">
-                  <time className="pt-1 text-sm text-muted-foreground">{time}</time>
+              {Array.from({ length: SCHEDULE_SLOT_COUNT }, (_, index) => (
+                <li key={index} className="grid min-h-15 grid-cols-[4rem_minmax(0,1fr)]">
+                  <Skeleton className="mt-1 h-5 w-10" />
                   <div className="border-t border-border" />
                 </li>
               ))}
@@ -119,9 +119,9 @@ function RoomContentScreen({
         <div className="mt-4 flex flex-1 flex-col gap-8 lg:grid lg:grid-cols-[minmax(18rem,26rem)_minmax(0,1fr)]">
           <RoomInfoCard room={room} />
 
-          <section
+          <Card
             aria-labelledby="schedule-title"
-            className="flex h-fit flex-col rounded-xl border border-border bg-card p-6 lg:p-8"
+            className="flex h-fit flex-col rounded-xl bg-card p-6 lg:p-8"
           >
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -182,7 +182,7 @@ function RoomContentScreen({
                 Забронировать комнату
               </Button>
             </div>
-          </section>
+          </Card>
         </div>
       </div>
     </main>

@@ -1,21 +1,38 @@
+import { TZDate } from '@date-fns/tz';
 import { format } from 'date-fns';
 
 import type { RoomBooking } from '@/entities/room';
 
-export const timeSlots = Array.from({ length: 24 }, (_, hour) => `${String(hour).padStart(2, '0')}:00`);
+const WORKDAY_START_HOUR = 9;
+export const SCHEDULE_SLOT_COUNT = 12;
 
 export type ScheduleSlot = {
   time: string;
   bookings: RoomBooking[];
 };
 
-export function groupBookingsBySlot(bookings: RoomBooking[]): ScheduleSlot[] {
-  const slots: ScheduleSlot[] = timeSlots.map((time) => ({ time, bookings: [] }));
-  const slotsByTime = new Map(slots.map((slot) => [slot.time, slot]));
+export function getScheduleSlots(date: Date, timeZone: string): ScheduleSlot[] {
+  return Array.from({ length: SCHEDULE_SLOT_COUNT }, (_, index) => {
+    const officeTime = new TZDate(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      WORKDAY_START_HOUR + index,
+      0,
+      timeZone,
+    );
+
+    return { time: format(new Date(officeTime.getTime()), 'HH:00'), bookings: [] };
+  });
+}
+
+export function groupBookingsBySlot(slots: ScheduleSlot[], bookings: RoomBooking[]): ScheduleSlot[] {
+  const groupedSlots: ScheduleSlot[] = slots.map((slot) => ({ time: slot.time, bookings: [] }));
+  const slotsByTime = new Map(groupedSlots.map((slot) => [slot.time, slot]));
 
   bookings.forEach((booking) => {
     slotsByTime.get(format(new Date(booking.startsAt), 'HH:00'))?.bookings.push(booking);
   });
 
-  return slots;
+  return groupedSlots;
 }
